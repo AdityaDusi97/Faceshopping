@@ -1,9 +1,6 @@
-# Pose-Transfer
-Code for the paper **Progressive Pose Attention for Person Image Generation** in **CVPR19(Oral)**. The paper is available [here](http://arxiv.org/abs/1904.03349). The video demo is coming soon.
+# Faceshopping: Enhancing Pose-Conditioned Human Image Generation with GANs
 
-<img src='imgs/results.png' width=800>
-
-This is Pytorch implementation for pose transfer on both Market1501 and DeepFashion dataset. The code is written by [Tengteng Huang](https://github.com/tengteng95) and [Zhen Zhu](https://github.com/jessemelpolio).
+This is Pytorch implementation for pose transfer on both Market1501 and DeepFashion dataset. The code is written by [Tengteng Huang](https://github.com/tengteng95) and [Zhen Zhu](https://github.com/jessemelpolio). We build on this code by alterting the perceptual loss funtion, neural network architecture by using ELU activation and more PAT blocks and also implement LayerNorm2d.
 
 ## Requirement
 * pytorch 1.0.1
