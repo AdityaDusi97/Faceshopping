@@ -4,6 +4,29 @@ import torch
 import functools
 import torch.nn.functional as F
 
+class LayerNorm2d(nn.Module):
+    def __init__(self, num_features, eps=1e-5, affine=True):
+        super().__init__()
+        self.num_features = num_features
+        self.affine = affine
+        self.eps = eps
+        
+        if self.affine:
+            self.gamma = nn.Parameter(torch.Tensor(num_features).uniform_())
+            self.beta = nn.Parameter(torch.zeros(num_features))
+            
+    def forward(self, x):
+        shape = [-1] + [1] * (x.dim() - 1)
+        mean = x.view(x.size(0),-1).mean(1).view(*shape)
+        std = x.view(x.size(0), -1).std(1).view(*shape)
+        
+        y = (x - mean)/(std + self.eps)
+        if self.affine:
+            shape = [1,-1] + [1] * (x.dim() - 2)
+            y = self.gamma.view(*shape) * y + self.beta.view(*shape)
+        return y
+        
+        
 
 class PATBlock(nn.Module):
     def __init__(self, dim, padding_type, norm_layer, use_dropout, use_bias, cated_stream2=False):
@@ -25,12 +48,12 @@ class PATBlock(nn.Module):
 
         if cated_stream2:
             conv_block += [nn.Conv2d(dim*2, dim*2, kernel_size=3, padding=p, bias=use_bias),
-                       norm_layer(dim*2),
-                       nn.ReLU(True)]
+                       LayerNorm2d(dim*2), # norm_layer -> LayerNorm2d
+                       nn.ELU(True)] # ReLU -> ELU
         else:
             conv_block += [nn.Conv2d(dim, dim, kernel_size=3, padding=p, bias=use_bias),
-                           norm_layer(dim),
-                           nn.ReLU(True)]
+                           LayerNorm2d(dim), # norm_layer -> LayerNorm2d
+                           nn.ELU(True)] # ReLU -> ELU
         if use_dropout:
             conv_block += [nn.Dropout(0.5)]
 
@@ -51,7 +74,7 @@ class PATBlock(nn.Module):
                 conv_block += [nn.Conv2d(dim, dim, kernel_size=3, padding=p, bias=use_bias)]
         else:
             conv_block += [nn.Conv2d(dim, dim, kernel_size=3, padding=p, bias=use_bias),
-                       norm_layer(dim)]
+                       LayerNorm2d(dim)] # norm_layer -> LayerNorm2d
 
         return nn.Sequential(*conv_block)
 
