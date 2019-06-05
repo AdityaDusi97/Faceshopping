@@ -1,38 +1,6 @@
-# Pose-Transfer
-Code for the paper **Progressive Pose Attention for Person Image Generation** in **CVPR19(Oral)**. The paper is available [here](http://arxiv.org/abs/1904.03349). 
+# Faceshopping: Enhancing Pose-Conditioned Human Image Generation with GANs
 
-<p float="center">
-	<img src='imgs/women1.jpg' width="100"/>
-  	<img src='imgs/walkfront.gif' width="100"/>
-  	<img src='imgs/women2.jpg' width="100"/>
-	<img src='imgs/dance.gif' width="100"/>
-	<img src='imgs/women3.jpg' width="100"/>
-    <img src='imgs/dance2.gif' width="100"/>
-    <img src='imgs/women4.jpg' width="100"/>
-    <img src='imgs/dance3.gif' width="100"/>
-</p>
-
-Video generation with a single image as input. More details can be found in the supplementary materials in our [paper](http://arxiv.org/abs/1904.03349).
-
-
-<!-- <figure class="fourth">
-	<img src='imgs/walkfront.gif' width="100"/>
-	<img src='imgs/dance.gif' width="100"/>
-    <img src='imgs/dance2.gif' width="100"/>
-    <img src='imgs/dance3.gif' width="100"/>
-</figure> -->
-
-<!-- <img src='imgs/walkfront.gif' width=100>
-<img src='imgs/dance.gif' width=100> -->
-
-## News 
-- [Video demo](https://youtu.be/bNHFPMX9BVk) is available now. We further improve the performance of our model by introducing a revised version of the [deformable skip-connections](https://github.com/AliaksandrSiarohin/pose-gan). We will release the code soon. Refer to our [supplementary materials](http://arxiv.org/abs/1904.03349) for more details. 
-- Codes for pytorch 1.0 is available now under the branch **pytorch_v1.0**. The same results on both datasets can be reproduced with the pretrained model. 
-
-
-<img src='imgs/results.png' width=800>
-
-This is Pytorch implementation for pose transfer on both Market1501 and DeepFashion dataset. The code is written by [Tengteng Huang](https://github.com/tengteng95) and [Zhen Zhu](https://github.com/jessemelpolio).
+This is Pytorch implementation for pose transfer on both Market1501 and DeepFashion dataset. The code is written by [Tengteng Huang](https://github.com/tengteng95) and [Zhen Zhu](https://github.com/jessemelpolio). This code is further modified to change the activations, perceptual loss function and Normalization.
 
 ## Requirement
 * pytorch(0.3.1)
