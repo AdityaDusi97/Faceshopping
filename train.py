@@ -3,6 +3,8 @@ from options.train_options import TrainOptions
 from data.data_loader import CreateDataLoader
 from models.models import create_model
 from util.visualizer import Visualizer
+from tensorboardX import SummaryWriter
+import os, datetime
 
 opt = TrainOptions().parse()
 data_loader = CreateDataLoader(opt)
@@ -13,6 +15,13 @@ print('#training images = %d' % dataset_size)
 model = create_model(opt)
 visualizer = Visualizer(opt)
 total_steps = 0
+
+run_dir = "/home/aditya/environment/" # place to add tensorboard prints
+time_stamp = datetime.datetime.now().strftime("%m_%d_%H_%M_%S")
+# create path for summary writer
+run_dir += time_stamp
+writer = SummaryWriter(run_dir)
+iteration = 0 # to keep track of iteration
 
 for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
     epoch_start_time = time.time()
@@ -31,7 +40,18 @@ for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):
             visualizer.display_current_results(model.get_current_visuals(), epoch, save_result)
 
         if total_steps % opt.print_freq == 0:
-            errors = model.get_current_errors()
+            errors = model.get_current_errors() #get error dictionary from model
+            # Adding tensorboard prints
+            if opt.with_D_PP:
+                writer.add_scalar('D_PP', errors['D_PP'], iteration)
+            if opt.with_D_PB:
+                writer.add_scalar('D_PB', errors['D_PB'], iteration)
+            if opt.with_D_PB or opt.with_D_PP:
+                writer.add_scalar('pair_GANLoss', errors['pair_GANloss'], iteration)
+            if opt.L1_type == 'l1_plus_perL1':
+                writer.add_scalar('origin_L1', errors['origin_L1'], iteration)
+                writer.add_scalar('perceptual', errors['perceptual'], iteration)
+                
             t = (time.time() - iter_start_time) / opt.batchSize
             visualizer.print_current_errors(epoch, epoch_iter, errors, t)
             if opt.display_id > 0:
