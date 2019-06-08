@@ -27,12 +27,6 @@ cd Pose-Transfer
 
 We use [OpenPose](https://github.com/ZheC/Realtime_Multi-Person_Pose_Estimation) to generate keypoints. We also provide our extracted keypoints files for convience.
 
-#### Market1501
-- Download the Market-1501 dataset from [here](http://www.liangzheng.com.cn/Project/project_reid.html). Rename **bounding_box_train** and **bounding_box_test** to **train** and **test**, and put them under the ```market_data``` directory.
-- Download train/test splits and train/test key points annotations from [Google Drive](https://drive.google.com/open?id=1YMsYXc41dR3k8YroXeWGh9zweNUQmZBw) or [Baidu Disk](https://pan.baidu.com/s/1fcMwXTUk9XKPLpaJSodTrg), including **market-pairs-train.csv**, **market-pairs-test.csv**, **market-annotation-train.csv**, **market-annotation-train.csv**. Put these four files under the ```market_data``` directory.
-- Launch ```python tool/generate_pose_map_market.py``` to generate the pose heatmaps.
-
-
 #### DeepFashion
 <!-- - Download the DeepFashion dataset from [here](http://mmlab.ie.cuhk.edu.hk/projects/DeepFashion/InShopRetrieval.html) -->
 - Download the DeepFashion dataset from [Google Drive](https://drive.google.com/open?id=1YMsYXc41dR3k8YroXeWGh9zweNUQmZBw) or [Baidu Disk](https://pan.baidu.com/s/1fcMwXTUk9XKPLpaJSodTrg). Unzip ```train.zip``` and ```test.zip``` into the ```fashion_data``` directory.
@@ -46,10 +40,6 @@ We use [OpenPose](https://github.com/ZheC/Realtime_Multi-Person_Pose_Estimation)
 OR you can download our generated pose estimations from here. (Coming soon.) --> 
 
 ### Train a model
-Market-1501
-```bash
-python train.py --dataroot ./market_data/ --name market_PATN --model PATN --lambda_GAN 5 --lambda_A 10  --lambda_B 10 --dataset_mode keypoint --no_lsgan --n_layers 3 --norm batch --batchSize 32 --resize_or_crop no --gpu_ids 0 --BP_input_nc 18 --no_flip --which_model_netG PATN --niter 500 --niter_decay 200 --checkpoints_dir ./checkpoints --pairLst ./market_data/market-pairs-train.csv --L1_type l1_plus_perL1 --n_layers_D 3 --with_D_PP 1 --with_D_PB 1  --display_id 0
-```
 
 DeepFashion
 ```bash
@@ -58,11 +48,6 @@ python train.py --dataroot ./fashion_data/ --name fashion_PATN --model PATN --la
 
 
 ### Test the model
-Market1501
-```bash
-python test.py --dataroot ./market_data/ --name market_PATN --model PATN --phase test --dataset_mode keypoint --norm batch --batchSize 1 --resize_or_crop no --gpu_ids 2 --BP_input_nc 18 --no_flip --which_model_netG PATN --checkpoints_dir ./checkpoints --pairLst ./market_data/market-pairs-test.csv --which_epoch latest --results_dir ./results
-```
-
 
 DeepFashion
 ```bash
@@ -76,14 +61,9 @@ We adopt SSIM, mask-SSIM, IS, mask-IS, DS, and PCKh for evaluation of Market-150
 
 For evaluation, **Tensorflow 1.4.1(python3)** is required. Please see ``requirements_tf.txt`` for details.
 
-For Market-1501:
-```bash
-python tool/getMetrics_market.py
-```
-
 For DeepFashion:
 ```bash
-python tool/getMetrics_market.py
+python tool/getMetrics_fashion.py
 ```
 
 If you still have problems for evaluation, please consider using **docker**. 
@@ -100,11 +80,6 @@ Refer to [this Issue](https://github.com/tengteng95/Pose-Transfer/issues/4).
 #### 2) DS Score
 Download pretrained on VOC 300x300 model and install propper caffe version [SSD](https://github.com/weiliu89/caffe/tree/ssd). Put it in the ssd_score forlder. 
 
-For Market-1501:
-```bash
-python compute_ssd_score_market.py --input_dir path/to/generated/images
-```
-
 For DeepFashion:
 ```bash
 python compute_ssd_score_fashion.py --input_dir path/to/generated/images
@@ -117,27 +92,15 @@ python compute_ssd_score_fashion.py --input_dir path/to/generated/images
 ```bash
 python2 compute_coordinates.py
 ```
-- run ``tool/calPCKH_fashion.py`` or ``tool/calPCKH_market.py``
+- run ``tool/calPCKH_fashion.py`` 
 
 
 
 ### Pre-trained model 
-Our pre-trained model can be downloaded [Google Drive](https://drive.google.com/open?id=1YMsYXc41dR3k8YroXeWGh9zweNUQmZBw) or [Baidu Disk](https://pan.baidu.com/s/1fcMwXTUk9XKPLpaJSodTrg).
+Coming Soon. We shall upload the model that we trained.
 
 ##### Notes:
 In pytorch 1.0, **running_mean** and **running_var** are not saved for the **Instance Normalization layer** by default. To reproduce our result in the paper, launch ``python tool/rm_insnorm_running_vars.py`` to remove corresponding keys in the pretrained model. (Only for the DeepFashion dataset.)
-
-
-## Citation
-If you use this code for your research, please cite our paper.
-```
-@article{zhu2019progressive,
-  title={Progressive Pose Attention Transfer for Person Image Generation},
-  author={Zhu, Zhen and Huang, Tengteng and Shi, Baoguang and Yu, Miao and Wang, Bofei and Bai, Xiang},
-  journal={arXiv preprint arXiv:1904.03349},
-  year={2019}
-}
-```
 
 ### Acknowledgments
 Our code is based on the popular [pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
